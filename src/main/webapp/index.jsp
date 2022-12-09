@@ -20,11 +20,16 @@
             input[type=submit]{
                 margin:auto;
             }
+            .list, .list td, .list th {
+                margin: auto;
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            .list td, .list th {
+                padding: 10px;
+            }
             body{
-                background-image:linear-gradient(
-                    to bottom,
-                    rgba(255, 255, 0, 0.5),
-                    rgba(0, 0, 255, 0.5));
+                
                 background-size: 100% 100%;
                 background-repeat: no-repeat;
                 background-attachment: fixed; 
@@ -46,34 +51,46 @@
                             <td><input id="surname" type="text" name="surname"></td>
                         </tr>
                         <tr>
+                            <td><label for="age">Age</label></td>
+                            <td><input id="age" type="text" name="age"></td>
+                        </tr>
+                        <tr>
                             <td><label for="email">Email</label></td>
                             <td><input id="email" type="email" name="email"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="group">Group</label></td>
+                            <td><input id="group" type="text" name="group"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="faculty">Faculty</label></td>
+                            <td><input id="faculty" type="text" name="faculty"></td>
                         </tr>
                     </tbody>
                 </table>
                 <input type="submit" name="send" value="Отправить">
             </form>
-            <c:if test="${not empty param.send}">
-                <c:set var="id" value="${id+1}" scope="application"/>
-
-                <c:if test="${not empty param.name}">
-                    <c:set var="name" value="${param.name}" scope="session"></c:set>
-                    <p>
-                    Name: ${param.name}
-                </p>
-                </c:if>
-                <c:if test="${not empty param.surname}">
-                    <c:set var="surname" value="${param.surname}" scope="session"></c:set>
-                    <p>
-                    Surname: ${param.surname}
-                </p>
-                </c:if>
-                <c:if test="${not empty param.email}">
-                    <c:set var="email" value="${param.email}" scope="session"></c:set>
-                    <p>
-                    Email: ${param.email}
-                </p>
-                </c:if>
+            <c:if test="${students.size()>0}">
+                <table class="list">
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Group</th>
+                        <th>Faculty</th>
+                    </tr>
+                    <c:forEach var="student" items="${students}">
+                        <tr>
+                            <td><c:out value="${student.getName()}"/></td>
+                            <td><c:out value="${student.getSurname()}"/></td>
+                            <td><c:out value="${student.getAge()}"/></td>
+                            <td><c:out value="${student.getEmail()}"/></td>
+                            <td><c:out value="${student.getGroup()}"/></td>
+                            <td><c:out value="${student.getFaculty()}"/></td>
+                        </tr>
+                    </c:forEach>
+                </table>
             </c:if>
         </div>
     </body>
