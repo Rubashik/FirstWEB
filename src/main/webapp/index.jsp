@@ -29,7 +29,11 @@
                 padding: 10px;
             }
             body{
-                
+                background-image: linear-gradient(
+                                    to bottom,
+                                    rgba(255, 255, 0, 0.5),
+                                    rgba(0, 0, 255, 0.5)
+                                    );
                 background-size: 100% 100%;
                 background-repeat: no-repeat;
                 background-attachment: fixed; 
