@@ -43,7 +43,7 @@
     <body>
         <div id="page">
             <h1>Hello World!</h1>
-            <form>
+            <form method="post" action="StudentAdd">
                 <table>
                     <tbody>
                         <tr>
