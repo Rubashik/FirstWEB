@@ -4,6 +4,13 @@
  */
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -18,7 +25,7 @@ import ua.edu.sumdu.Student;
  *
  * @author vanua
  */
-@WebServlet(urlPatterns = {"/StudentAdd"})
+@WebServlet(name="Default", urlPatterns = "/", loadOnStartup=1)
 public class StudentAdd extends HttpServlet {
 
     /**
@@ -32,22 +39,58 @@ public class StudentAdd extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        List<Student> students = (List<Student>)session.getAttribute("students");
+        
+    PrintWriter pw = null;
+    try{
+        pw = response.getWriter();
+        Class.forName("com.mysql.jdbc.Driver");
+    }catch(ClassNotFoundException ex){
+       ex.printStackTrace(pw);
+       pw.print(ex.getMessage());
+    }
     
-        if(students == null){
-            students = new LinkedList<Student>();
-            session.setAttribute("students", students);
+    Connection conn = null;
+    try{
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3311/university", "root", "root");
+        if(request.getParameter("name")!=null && request.getParameter("surname")!=null){
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO students (name,surname,age,email,group_,faculty"+
+                    "VALUES (?,?,?,?,?,?)");
+            ps.setString(1, request.getParameter("name"));
+            ps.setString(2, request.getParameter("surname"));
+            ps.setInt(3, Integer.parseInt(request.getParameter("age")));
+            ps.setString(4, request.getParameter("email"));
+            ps.setString(5, request.getParameter("group"));
+            ps.setString(6, request.getParameter("faculty"));
+            ps.executeUpdate();
+            response.sendRedirect("./");
         }
         
-        if (request.getParameter("name") != "" || request.getParameter("surname") != ""){
-            Student student = new Student(request.getParameter("name"), request.getParameter("surname"),
-            request.getParameter("age"), request.getParameter("email"), request.getParameter("group"),
-            request.getParameter("faculty"));
+        Statement s = conn.createStatement();
+        ResultSet rs = s.executeQuery("SELECT * FROM students");
+        List<Student> students = new LinkedList<Student>();
+        
+        while(rs.next()){
+            Student student = new Student(rs.getString(2),rs.getString(3),rs.getInt(4),
+                    rs.getString(5),rs.getString(6),rs.getString(7));
             students.add(student);
         }
+        request.setAttribute("students", students);
+        request.getRequestDispatcher("view.jsp").forward(request, response);
+    }catch(SQLException ex){
+        pw.print(ex.getMessage());
+        ex.printStackTrace();
+    }catch(Exception ex){
+        ex.printStackTrace();
+    }finally{
+        if(conn != null){
+            try{
+                conn.close();
+            }catch(SQLException ex){
+                ex.getMessage();
+            }
+        }
+    }
         
-        response.sendRedirect("index.jsp");
         
     }
 

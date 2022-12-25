@@ -8,12 +8,12 @@ package ua.edu.sumdu;
 public class Student {
     private String name;
     private String surname;
-    private String age;
+    private int age;
     private String email;
     private String group;
     private String faculty;
     
-    public Student(String name, String surname, String age, String email, String group, String faculty){
+    public Student(String name, String surname, int age, String email, String group, String faculty){
         this.name=name;
         this.surname=surname;
         this.age=age;
@@ -34,10 +34,10 @@ public class Student {
     public void setSurname(String surname){
         this.surname=surname;
     }
-    public String getAge(){
+    public int getAge(){
         return age;
     }
-    public void setAge(String age){
+    public void setAge(int age){
         this.age=age;
     }
     public String getEmail(){
